@@ -17,4 +17,4 @@ class  CheckViewFragment : Fragment(){
         var view = LayoutInflater.from(activity).inflate(R.layout.fragment_check,container,false)
         return view
     }
-}
+};;;
