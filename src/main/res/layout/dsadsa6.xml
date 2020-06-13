@@ -35,7 +35,7 @@
         android:padding="20dp">
 
         <TextView
-            android:id="@+id/textView34"
+            android:id="@+id/textView100"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:background="@drawable/circleforprofile"
@@ -65,7 +65,6 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:privateImeOptions="defaultInputmode=korean"
                 android:hint="이름을 입력해주세요" />
         </LinearLayout>
 

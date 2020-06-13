@@ -4,48 +4,107 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import com.example.android_newsky.R;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 public class Friend_View extends AppCompatActivity {
 
-    private ListView listOfFriends;
+    private ListView listview = null;
     private ListViewAdapter adapter = null;
+    private String[] colorArray = {"#D1DDDB", "#85B8CB", "#1D6A96", "#283B42", "#BD8E62", "#A46843", "#370D00", "#7FB174", "#689C97", "#072A24"};
+
+    String[] list_line;
+    String[] list_name;
+    String[] list_email;
+    String[] list_id;
+
+    final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
+    final static String fileName = "friendInfo04.txt";
+    final static String filePath = folderName + "/" + fileName;
+
+    FileInputStream fileInputStreamCounter = null;
+    BufferedReader bufferedReaderCounter = null;
+
+    FileInputStream fileInputStreamLoader = null;
+    BufferedReader bufferedReaderLoader = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dsadsa3);
 
-        ListView listview ;
-
-        // Adapter 생성
-        adapter = new ListViewAdapter() ;
+        adapter = new ListViewAdapter();
 
         // 리스트뷰 참조 및 Adapter 달기
+
         listview = (ListView) findViewById(R.id.list);
         listview.setAdapter(adapter);
 
-        adapter.addItem(R.drawable.ic_account, "Box", "Account Box Black 36dp");
-        adapter.addItem(R.drawable.ic_account, "Circle", "Account Circle Black 36dp");
-        adapter.addItem(R.drawable.ic_account, "Ind", "Assignment Ind Black 36dp");
-        adapter.addItem(R.drawable.ic_account, "Ind", "Assignment Ind Black 36dp");
-        adapter.addItem(R.drawable.ic_account, "Ind", "Assignment Ind Black 36dp");
-        adapter.addItem(R.drawable.ic_account, "Ind", "Assignment Ind Black 36dp");
-        adapter.addItem(R.drawable.ic_account, "Ind", "Assignment Ind Black 36dp");
-        adapter.addItem(R.drawable.ic_account, "Ind", "Assignment Ind Black 36dp");
-        adapter.addItem(R.drawable.ic_account, "Ind", "Assignment Ind Black 36dp");
-        adapter.addItem(R.drawable.ic_account, "Ind", "Assignment Ind Black 36dp");
+        int countLine = 0;
+
+        try {
+            fileInputStreamCounter = new FileInputStream(filePath);
+            bufferedReaderCounter = new BufferedReader(new InputStreamReader(fileInputStreamCounter));
+
+            fileInputStreamLoader = new FileInputStream(filePath);
+            bufferedReaderLoader = new BufferedReader(new InputStreamReader(fileInputStreamLoader));
+
+            while(bufferedReaderCounter.readLine() != null) {
+                countLine ++;
+            }
+        } catch (IOException e){ e.printStackTrace(); }
+
+        try {
+            list_line = new String[countLine];
+
+            for(int i = 0; i < countLine; i++) {
+                list_line[i] = bufferedReaderLoader.readLine();
+            }
+        } catch (IOException e){ e.printStackTrace(); }
+
+        GradientDrawable drawable = (GradientDrawable) ContextCompat.getDrawable(this, R.drawable.circleforprofile);
+        TextView ivShape = (TextView) findViewById(R.id.textView0);
+
+        // drawable.setColor(Color.parseColor(colorArray[5]));
+
+        list_id = new String[countLine];
+        list_name = new String[countLine];
+        list_email = new String[countLine];
+
+        StringTokenizer st = null;
+
+        for(int i = 0; i < countLine; i++) {
+            st = new StringTokenizer(list_line[i]);
+
+            list_id[i] = st.nextToken();
+            list_name[i] = st.nextToken();
+            list_email[i] = st.nextToken();
+
+            adapter.addItem(String.valueOf(list_name[i].charAt(0)), list_id[i], list_name[i], list_email[i]);
+        }
+
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -55,14 +114,24 @@ public class Friend_View extends AppCompatActivity {
 
                 ListViewItem item = (ListViewItem) parent.getItemAtPosition(position) ;
 
-                intent.putExtra("profile", Integer.toString(item.getProfile()));
+                intent.putExtra("profile", item.getProfile());
+                intent.putExtra("profId", item.getProfId());
                 intent.putExtra("name", item.getTitle());
                 intent.putExtra("email", item.getDesc());
 
                 startActivity(intent);
-
-                // Toast.makeText(getApplicationContext(),"황호선바보", Toast.LENGTH_LONG).show();
             }
-        }) ;
+        });
+
+        Button addItem = (Button)findViewById(R.id.addItem);
+
+        addItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Friend_View.this, F_AddFriend_Activity.class);
+
+                startActivity(intent);
+            }
+        });
     }
 }

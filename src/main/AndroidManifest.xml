@@ -16,20 +16,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <!-- android:name=".GlobalApplication" -->
-        <activity android:name=".navigation.AddPhotoActivity" />
-        <activity android:name=".navigation.RecordActivity" />
-        <activity android:name=".navigation.F_ShowProfile" />
-        <activity android:name=".navigation.Friend_View">
+
+        <activity
+            android:name=".navigation.F_SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".navigation.AddPhotoActivity" />
+        <activity android:name=".navigation.RecordActivity" />
+        <activity android:name=".navigation.F_ShowProfile" />
+        <activity android:name=".navigation.F_AddFriend_Activity">
+        </activity>
+        <activity android:name=".navigation.F_ModifyFriend">
+        </activity>
+        <activity android:name=".navigation.File_Write">
+
+        </activity>
+        <activity android:name=".navigation.Friend_View">
+        </activity>
 
         <activity android:name=".LoginActivity">
         </activity>
         <activity android:name=".MainActivity">
+
         </activity>
 
         <meta-data

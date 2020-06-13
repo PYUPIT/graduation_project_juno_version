@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:text="파일쓰기"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="mOnFileWrite"/>
+
+    <Button
+        android:text="파일읽기"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="mOnFileRead"/>
+
+    <TextView
+        android:id="@+id/txtRead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/round_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/circleforprofile"
+        android:text="B"
+        android:layout_marginLeft="5dp" />
+
+</LinearLayout>
