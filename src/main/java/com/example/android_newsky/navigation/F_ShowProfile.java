@@ -29,7 +29,7 @@ public class F_ShowProfile extends Activity {
     TextView email = null;
 
     final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
-    final static String fileName = "friendInfo04.txt";
+    final static String fileName = "friendInfo05.txt";
     final static String filePath = folderName + "/" + fileName;
 
     FileInputStream fileInputStreamTemp = null;

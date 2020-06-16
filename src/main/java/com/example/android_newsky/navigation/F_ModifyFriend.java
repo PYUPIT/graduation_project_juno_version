@@ -28,7 +28,7 @@ public class F_ModifyFriend extends Activity {
     String profId = null;
 
     final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
-    final static String fileName = "friendInfo04.txt";
+    final static String fileName = "friendInfo05.txt";
     final static String filePath = folderName + "/" + fileName;
 
     private EditText editTextName;

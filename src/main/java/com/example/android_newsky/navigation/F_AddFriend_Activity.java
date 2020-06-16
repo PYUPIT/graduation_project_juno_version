@@ -23,7 +23,7 @@ import com.example.android_newsky.R;
 public class F_AddFriend_Activity extends Activity {
 
     final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
-    final static String fileName = "friendInfo04.txt";
+    final static String fileName = "friendInfo05.txt";
     final static String filePath = folderName + "/" + fileName;
 
     final static String idFilePath = folderName + "/" + "id.txt";
