@@ -44,7 +44,8 @@ public class Text_view extends AppCompatActivity {
     int positions=0;
     String temp;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_view);
 

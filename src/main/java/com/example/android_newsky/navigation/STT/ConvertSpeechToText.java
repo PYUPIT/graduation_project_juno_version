@@ -1,11 +1,13 @@
-package com.example.android_newsky.navigation;
+package com.example.android_newsky.navigation.STT;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.speech.RecognitionListener;
@@ -18,7 +20,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android_newsky.Main_Activity;
 import com.example.android_newsky.R;
 
 import java.io.BufferedWriter;
@@ -26,38 +27,27 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-public class Example03_Fragment extends Fragment {
+public class ConvertSpeechToText extends Fragment {
 
-    Intent intent;
     SpeechRecognizer mRecognizer;
     Button sttBtn;
     TextView textView;
+    Intent intent;
+
     final int PERMISSION = 1;
 
-    final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
-    final static String fileName = "friendInfo05.txt";
-    final static String filePath = folderName + "/" + fileName;
-    final static String TextFileName = "textInfo.txt";
-    final static String filePath02 = folderName + "/" + TextFileName;
+    private final static String directoryName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Nokmusae/ConvertedText";
+
+    private String textFileName = null;
+
+    private final static String TextFileName = "textInfo.txt";
 
     FileOutputStream fileOutputStreamText = null;
     BufferedWriter bufferedWriterText = null;
-
-    Main_Activity mainActivity;
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mainActivity = (Main_Activity)getActivity();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mainActivity = null;
-    }
 
     @Nullable
     @Override
@@ -65,52 +55,68 @@ public class Example03_Fragment extends Fragment {
 
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_menu_sst, container, false);
 
-        textView = (TextView)rootView.findViewById(R.id.sttResult);
-        sttBtn = (Button)rootView.findViewById(R.id.sttStart);
+        File convertedTextDir = new File(directoryName);
+        // 음성이 변환된 텍스트 파일을 저장할 디렉토리 생성
+        if(!convertedTextDir.exists()) {
+            convertedTextDir.mkdir();
+        }
+
+        if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSION);
+        }
+
+        textView = rootView.findViewById(R.id.sttResult);
 
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 
-        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,mainActivity.getPackageName());
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,getActivity().getPackageName());
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
 
+        sttBtn = rootView.findViewById(R.id.sttStart);
         sttBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mRecognizer = SpeechRecognizer.createSpeechRecognizer(getContext());
-                mRecognizer.setRecognitionListener(listener);
+                mRecognizer.setRecognitionListener(recognitionListener);
                 mRecognizer.startListening(intent);
             }
         });
+
         return rootView;
     }
 
-    private RecognitionListener listener = new RecognitionListener() {
+    private RecognitionListener recognitionListener = new RecognitionListener() {
+
         @Override
-        public void onReadyForSpeech(Bundle params) {
+        public void onReadyForSpeech(Bundle params)
+        {
             Toast.makeText(getActivity(), "음성인식을 시작합니다.", Toast.LENGTH_SHORT).show();
         }
-
         @Override
         public void onBeginningOfSpeech() {
+
         }
 
         @Override
-        public void onRmsChanged(float rmsdB) {
+        public void onRmsChanged(float v) {
+
         }
 
         @Override
-        public void onBufferReceived(byte[] buffer) {
+        public void onBufferReceived(byte[] bytes) {
+
         }
 
         @Override
         public void onEndOfSpeech() {
+
         }
 
         @Override
-        public void onError(int error) {
+        public void onError(int i) {
             String message;
 
-            switch (error) {
+            switch (i) {
                 case SpeechRecognizer.ERROR_AUDIO:
                     message = "오디오 에러";
                     break;
@@ -142,28 +148,36 @@ public class Example03_Fragment extends Fragment {
                     message = "알 수 없는 오류임";
                     break;
             }
-
-            Toast.makeText(getActivity(), "에러가 발생하였습니다. : " + message,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "에러가 발생하였습니다. : " + message,Toast.LENGTH_SHORT).show();
         }
+
         @Override
-        public void onResults(Bundle results) {
+        public void onResults(Bundle bundle) {
             // 말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줍니다.
-            ArrayList<String> matches =
-                    results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            ArrayList<String> matches = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
 
             String dummy = "";
 
-            for(int i = 0; i < matches.size() ; i++){
+            for(int i = 0; i < matches.size() ; i++)
+            {
                 textView.setText(matches.get(i));
-                dummy += matches.get(i) + "\n";
             }
 
-            try {
-                File dir = new File(folderName);
+            dummy += textView.getText().toString();
 
-                if (!dir.exists()) { dir.mkdir(); } // 폴더가 존재하지 않는다면 폴더 생성
+            try
+            {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyMMdd_HHmmss");
 
-                fileOutputStreamText = new FileOutputStream(filePath02, false);
+                Date time = new Date();
+
+                String timeForNaming = simpleDateFormat.format(time);
+
+                textFileName = "변환본 " + timeForNaming + ".txt";
+
+                String filePath = directoryName + "/" + textFileName;
+
+                fileOutputStreamText = new FileOutputStream(filePath, false);
                 bufferedWriterText = new BufferedWriter(new OutputStreamWriter(fileOutputStreamText));
 
                 bufferedWriterText.write(dummy);

@@ -31,6 +31,8 @@ import me.itangqi.waveloadingview.WaveLoadingView;
 
 public class LoadRecordFile extends Fragment {
 
+    private final String directoryName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Nokmusae/Recording";
+
     ListView lvFileList;
     Button btnPlay;
     Button btnNext;
@@ -55,23 +57,23 @@ public class LoadRecordFile extends Fragment {
         searchFileList.clear();
         searchFileName.clear();
 
-        String sdcardPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Recorder";
-
-        File root = new File(sdcardPath);
-
-        if(root == null){
-            ToastMessage("파일 검색에 실패 했습니다.", Toast.LENGTH_LONG);
+        File recordingDir = new File(directoryName);
+        // 녹음된 음성 파일을 저장할 디렉토리 생성
+        if(!recordingDir.exists())
+        {
+            recordingDir.mkdir();
         }
-        else {
-            SearchFile(sdcardPath);   //파일을 검색한다
+        else
+        {
+            SearchFile(directoryName);   //파일을 검색한다
         }
 
-        if(searchFileList.size() <= 0) {
+        if(searchFileList.size() <= 0)
+        {
             ToastMessage("재생할 오디오 파일이 존재하지 않습니다.", Toast.LENGTH_LONG);
         }
-
-        else {
-            //재생할 파일을 ListView와 연결 한다.
+        else
+        {
             ArrayAdapter<String> adapter;
 
             adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_multiple_choice, searchFileName);
@@ -134,7 +136,6 @@ public class LoadRecordFile extends Fragment {
     private void playAudio(String filePath)
     {
         FileInputStream fis = null;
-
         try
         {
             mp.reset();
@@ -157,6 +158,7 @@ public class LoadRecordFile extends Fragment {
         {
             ToastMessage(err.getMessage(), Toast.LENGTH_LONG);
         }
+
     }
 
     private void nextAudio()

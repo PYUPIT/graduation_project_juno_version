@@ -24,14 +24,14 @@ import java.util.StringTokenizer;
 
 public class ShowFriends_ShowProfile extends AppCompatActivity {
 
+    private final String directoryName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Nokmusae";
+    private final String fileName = "61895144.txt";
+    private final String filePath = directoryName + "/" + fileName;
+
     TextView profile = null;
     TextView profId = null;
     TextView name = null;
     TextView email = null;
-
-    final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
-    final static String fileName = "friendInfo05.txt";
-    final static String filePath = folderName + "/" + fileName;
 
     FileInputStream fileInputStreamTemp = null;
     BufferedReader bufferedReaderTemp = null;
@@ -56,10 +56,9 @@ public class ShowFriends_ShowProfile extends AppCompatActivity {
         name.setText(intent.getStringExtra("name"));
         email.setText(intent.getStringExtra("email"));
     }
-
-    public void ModifyProfile(View view) {
-
-        Intent intent = new Intent(ShowFriends_ShowProfile.this, F_ModifyFriend.class);
+    public void ModifyProfile(View view)
+    {
+        Intent intent = new Intent(this, ShowFriends_ShowProfile_ModifyProfile.class);
 
         intent.putExtra("profile", profile.getText());
         intent.putExtra("profId", profId.getText());
@@ -71,15 +70,15 @@ public class ShowFriends_ShowProfile extends AppCompatActivity {
 
     public void SendEmail (View view) {
 
-        Intent email2 = new Intent(Intent.ACTION_SEND);
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
 
-        email2.setType("plain/text");
+        emailIntent.setType("message/rfc822");
 
-        email2.putExtra(Intent.EXTRA_EMAIL, new String[]{"email@gmail.com"});
-        email2.putExtra(Intent.EXTRA_SUBJECT, "[녹무새]에서 발신");
-        email2.putExtra(Intent.EXTRA_TEXT, "황호선 임베디드 0점 갑니다.");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email.getText().toString()});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "[녹무새]에서 발신되었습니다.");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, name.getText().toString() + "님이 당신과 아이디어를 공유합니다!");
 
-        startActivity(email2);
+        startActivity(emailIntent);
     }
 
     public void DeleteProfile(View view) {
@@ -90,12 +89,12 @@ public class ShowFriends_ShowProfile extends AppCompatActivity {
         dialog.setMessage("삭제하시겠습니까?");
 
         dialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Deleting();
-            }});
+        public void onClick(DialogInterface dialog, int which) {
+            Deleting();
+        }});
         dialog.setNegativeButton("아니오", null);
         dialog.create().show();
-    }
+}
 
     public void Deleting() {
 

@@ -23,11 +23,11 @@ import com.example.android_newsky.R;
 
 public class ShowFriends_AddFriend extends AppCompatActivity {
 
-    final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
-    final static String fileName = "friendInfo05.txt";
-    final static String filePath = folderName + "/" + fileName;
+    private final String directoryName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Nokmusae";
+    private final String fileName = "61895144.txt";
+    private final String filePath = directoryName + "/" + fileName;
 
-    final static String idFilePath = folderName + "/" + "id.txt";
+    private final String idFilePath = directoryName + "/" + "94.txt";
 
     private EditText editTextName;
     private EditText editTextEmail;
@@ -57,11 +57,8 @@ public class ShowFriends_AddFriend extends AppCompatActivity {
 
         String editIndex = editTextName.getText().toString();
 
-        try {
-            File dir = new File(folderName);
-
-            if (!dir.exists()) { dir.mkdir(); } // 폴더가 존재하지 않는다면 폴더 생성
-
+        try
+        {
             fileInputStreamNumber = new FileInputStream(idFilePath);
             bufferedReaderNumber = new BufferedReader(new InputStreamReader(fileInputStreamNumber));
 
@@ -87,30 +84,23 @@ public class ShowFriends_AddFriend extends AppCompatActivity {
             temp = String.valueOf(temp2);
         } catch (IOException e){ e.printStackTrace(); }
 
-        try {
-            File dir = new File(folderName);
-
-            if (!dir.exists()) { dir.mkdir(); } // 폴더가 존재하지 않는다면 폴더 생성
-
+        try
+        {
             fileOutputStreamNumber = new FileOutputStream(idFilePath, false);
             bufferedWriterNumber = new BufferedWriter(new OutputStreamWriter(fileOutputStreamNumber));
 
             bufferedWriterNumber.write(temp);
-            bufferedWriterNumber.flush();
 
-            bufferedWriterNumber.close();
+            bufferedWriterNumber.flush();
             bufferedWriterNumber.close();
         } catch (IOException e) { e.printStackTrace(); }
 
         String contents = temp + " " + editTextName.getText() + " " + editTextEmail.getText() + "\n";
 
-        if(editIndex.length() > 0)  {
-
-            try {
-                File dir = new File(folderName);
-
-                if (!dir.exists()) { dir.mkdir(); } // 폴더가 존재하지 않는다면 폴더 생성
-
+        if(editIndex.length() > 0)
+        {
+            try
+            {
                 fileOutputStreamValue = new FileOutputStream(filePath, true);
                 bufferedWriterValue = new BufferedWriter(new OutputStreamWriter(fileOutputStreamValue));
 
@@ -120,7 +110,7 @@ public class ShowFriends_AddFriend extends AppCompatActivity {
                 bufferedWriterValue.close();
                 fileOutputStreamValue.close();
 
-                Intent intent = new Intent(com.example.android_newsky.navigation.social.ShowFriends_AddFriend.this, Main_Activity.class);
+                Intent intent = new Intent(ShowFriends_AddFriend.this, Main_Activity.class);
 
                 startActivity(intent);
                 finish();

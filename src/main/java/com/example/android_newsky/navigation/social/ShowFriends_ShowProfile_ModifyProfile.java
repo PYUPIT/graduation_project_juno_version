@@ -1,6 +1,5 @@
 package com.example.android_newsky.navigation.social;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -20,24 +19,22 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
 
+import com.example.android_newsky.Main_Activity;
 import com.example.android_newsky.R;
 import com.example.android_newsky.navigation.Friend_View;
 
 
 public class ShowFriends_ShowProfile_ModifyProfile extends AppCompatActivity {
 
+    private final String directoryName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Nokmusae";
+    private final String fileName = "61895144.txt";
+    private final String filePath = directoryName + "/" + fileName;
+
     TextView profile = null;
     String profId = null;
 
-    final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
-    final static String fileName = "friendInfo05.txt";
-    final static String filePath = folderName + "/" + fileName;
-
     private EditText editTextName;
     private EditText editTextEmail;
-
-    FileOutputStream fileOutputStreamValue = null;
-    BufferedWriter bufferedWriterValue = null;
 
     private FileInputStream fileInputStreamTemp = null;
     private BufferedReader bufferedReaderTemp = null;
@@ -46,10 +43,11 @@ public class ShowFriends_ShowProfile_ModifyProfile extends AppCompatActivity {
     private BufferedWriter bufferedWriterTemp = null;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dsadsa6);
+        setContentView(R.layout.activity_show_show_modify);
 
         Intent intent = getIntent();
 
@@ -76,8 +74,7 @@ public class ShowFriends_ShowProfile_ModifyProfile extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"이름을 입력해주세요", Toast.LENGTH_LONG).show();
         }
 
-        Intent intent = new Intent(com.example.android_newsky.navigation.social.ShowFriends_ShowProfile_ModifyProfile.this, Friend_View.class);
-
+        Intent intent = new Intent(this, Main_Activity.class);
         startActivity(intent);
         finish();
     }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,31 +31,26 @@ import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import me.itangqi.waveloadingview.WaveLoadingView;
-
-@RequiresApi(api = Build.VERSION_CODES.O)
 
 public class RecordVoice extends Fragment {
 
     private MediaPlayer player;
     private MediaRecorder recorder;
 
-    private final File file = Environment.getExternalStorageDirectory();
+    ImageView btnForRecord = null;
 
-    String dataTimeNow = LocalDateTime.now().toString();
+    private final String directoryName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Nokmusae/Recording";
 
-    private final String PATH = file.getAbsolutePath() + "/" + dataTimeNow + "_recorder.mp3";
+    private String recordingFileName = null;
 
-    private String saveFilePath = null;
     private int position;
-    String dirPath = file.getAbsoluteFile() + "/Recorder";
-
-    File fileFolder;
-
 
     private Timer t = null;
     private Timer t2 = null;
@@ -76,24 +73,21 @@ public class RecordVoice extends Fragment {
 
         ViewGroup rootView = (ViewGroup)inflater.inflate(R.layout.fragment_menu_record, container, false);
 
-        fileFolder = new File(dirPath);
-
-        if(!fileFolder.exists()) {
-            fileFolder.mkdirs();
-            Toast.makeText(getContext(), "재생을 시작합니다!", Toast.LENGTH_LONG).show();
+        File recordingDir = new File(directoryName);
+        // 녹음된 음성 파일을 저장할 디렉토리 생성
+        if(!recordingDir.exists()) {
+            recordingDir.mkdirs();
         }
 
         textView = (TextView)rootView.findViewById(R.id.text_time);
 
-        t = new Timer("hello", true);
-
         waveLoadingView = (WaveLoadingView)rootView.findViewById(R.id.waveLoadingView);
 
-        Button btnForRecord = rootView.findViewById(R.id.record);
+        btnForRecord = rootView.findViewById(R.id.record);
         btnForRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onButton5Clicked();
+                ClickRecordBtn();
             }
         });
 
@@ -116,17 +110,17 @@ public class RecordVoice extends Fragment {
         return rootView;
     }
 
-    public void ClickPlayBtn() {
-        Log.d("RecordActivity", "시작 버튼 클릭됨!");
-
+    public void ClickPlayBtn()
+    {
         FileInputStream fis = null;
+
         try {
             try {
                 KillPlayer();
 
                 player = new MediaPlayer();
 
-                fis = new FileInputStream(saveFilePath);
+                fis = new FileInputStream(directoryName + "/" +recordingFileName + ".mp3");
 
                 FileDescriptor fd = fis.getFD();
 
@@ -134,11 +128,11 @@ public class RecordVoice extends Fragment {
                 player.prepare();
                 player.start();
 
+                t2 = new Timer();
+
                 seconds = 0;
                 minute = 0;
                 hour = 0;
-
-                t2 = new Timer("second", true);
 
                 temp2 = 0;
                 temp3 = (int) player.getDuration();
@@ -187,19 +181,21 @@ public class RecordVoice extends Fragment {
             }
 
             Toast.makeText(getContext(), "재생을 시작합니다!", Toast.LENGTH_LONG).show();
+
         } catch (Exception e) {
             Toast.makeText(getContext(), "재생할 파일이 존재하지 않습니다!", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
 
-    public void ClickStopBtn() {
-        Log.d("RecordActivity", "일시정지 버튼 클릭됨!");
+    public void ClickStopBtn()
+    {
+        Log.d("RecordVoice", "일시정지 버튼 클릭됨!");
 
-        if (player != null && player.isPlaying()) {
+        if (player != null && player.isPlaying())
+        {
             position = player.getCurrentPosition();
             player.pause();
-            ;
         }
 
         t2.cancel();
@@ -207,56 +203,45 @@ public class RecordVoice extends Fragment {
         Toast.makeText(getContext(), "재생을 일시정지 합니다!", Toast.LENGTH_LONG).show();
     }
 
-    public void onButton4Clicked(View v) {
-        Log.d("RecordActivity", "중지 버튼 클릭됨!");
-
-        if (player != null && player.isPlaying()) {
-            player.stop();
-        }
-        Toast.makeText(getContext(), "재생을 중지합니다!", Toast.LENGTH_LONG).show();
-    }
-
-    public void onButton3Clicked(View v) {
-        Log.d("RecordActivity", "목록 버튼 클릭됨!");
-
-//        if (player != null && !player.isPlaying()) {
-//            player.start();
-//            player.seekTo(position);
-//        }
-
-        Intent intent = new Intent(getActivity(), RecorderPlayerActivity.class);
-        startActivity(intent);
-    }
-
     private int index_rdc = 0;
 
-    public void onButton5Clicked() {
-
+    public void ClickRecordBtn()
+    {
         if(index_rdc == 0) {
             RunTime();
             recordAudio();
+
+            btnForRecord.setImageResource(R.drawable.btn_stop);
+
             index_rdc = 1;
         }
-        else {
-            if (recorder != null) {
-
-
+        else
+        {
+            if (recorder != null)
+            {
                 recorder.stop();
-
-                System.out.println("111111111111111111111111111111111");
-
                 recorder.release();
+
                 recorder = null;
 
-                Toast.makeText(getContext(), "녹음을 중지합니다!", Toast.LENGTH_LONG).show();
+                btnForRecord.setImageResource(R.drawable.btn_record);
+
+                index_rdc = 0;
+                t.cancel();
+
+                Toast.makeText(getContext(), "녹 음 중 지", Toast.LENGTH_SHORT).show();
             }
-            index_rdc = 0;
-            t.cancel();
         }
     }
 
 
-    public void RunTime() {
+    public void RunTime()
+    {
+        t = new Timer();
+
+        seconds = 0;
+        minute = 0;
+        hour = 0;
 
         temp1 = 0;
 
@@ -291,36 +276,62 @@ public class RecordVoice extends Fragment {
         }, 1000, 1000);
     }
 
-    private void recordAudio() {
-        try {
-            System.out.println(recorder);
+    private void recordAudio()
+    {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyMMdd_HHmmss");
 
-            if (recorder != null) {
+        Date time = new Date();
+
+        String timeForNaming = simpleDateFormat.format(time);
+
+        recordingFileName = "녹음 " + timeForNaming;
+
+        try
+        {
+            if (recorder != null)
+            {
                 recorder.stop();
                 recorder.release();
                 recorder = null;
             }
 
-            saveFilePath = fileFolder + "/Recorder" + LocalDateTime.now().toString()+ "_recorder.mp3";
-
-            recorder = new MediaRecorder();
-
-            try {
+            try
+            {
+                recorder = new MediaRecorder();
                 recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
                 recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-                recorder.setOutputFile(saveFilePath);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            //System.out.println(PATH);
+                recorder.setOutputFile(directoryName + "/" +recordingFileName + ".mp3");
+            } catch (Exception e) { e.printStackTrace(); }
+
             recorder.prepare();
             recorder.start();
 
-            Toast.makeText(getContext(), "녹음을 시작합니다!", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
+            Toast.makeText(getContext(), "녹 음 시 작", Toast.LENGTH_LONG).show();
+
+        } catch (IOException e) { e.printStackTrace(); }
+    }
+
+    public void onButton4Clicked(View v) {
+        Log.d("RecordActivity", "중지 버튼 클릭됨!");
+
+        if (player != null && player.isPlaying()) {
+            player.stop();
         }
+        Toast.makeText(getContext(), "재생을 중지합니다!", Toast.LENGTH_LONG).show();
+    }
+
+    public void onButton3Clicked(View v)
+    {
+//        Log.d("RecordActivity", "목록 버튼 클릭됨!");
+//
+//        if (player != null && !player.isPlaying()) {
+//            player.start();
+//            player.seekTo(position);
+//        }
+//
+//        Intent intent = new Intent(getActivity(), RecorderPlayerActivity.class);
+//        startActivity(intent);
     }
 
     // 앱이 종료가 되었을 때도

@@ -1,20 +1,22 @@
 package com.example.android_newsky;
 
-import com.example.android_newsky.navigation.*;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.android_newsky.navigation.STT.ConvertSpeechToText;
 import com.example.android_newsky.navigation.inven.LoadRecordFile;
 import com.example.android_newsky.navigation.inven.LoadTextFile;
 import com.example.android_newsky.navigation.record.RecordVoice;
@@ -22,15 +24,18 @@ import com.example.android_newsky.navigation.social.ShowFriends;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+import java.io.File;
+
 public class Main_Activity extends AppCompatActivity {
+
+    final static String directoryName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Nokmusae";
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private FragmentTransaction transaction = fragmentManager.beginTransaction();
 
     private LoadTextFile menu1Fragment = new LoadTextFile();
     private LoadRecordFile menu2Fragment = new LoadRecordFile();
-    private Example03_Fragment menu3Fragment = new Example03_Fragment();
+    private ConvertSpeechToText menu3Fragment = new ConvertSpeechToText();
     private RecordVoice menu5Fragment = new RecordVoice();
     private ShowFriends menu4Fragment = new ShowFriends();
 
@@ -39,13 +44,13 @@ public class Main_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main02);
 
-        if(ActivityCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
-                ||ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        )
-        {
-            ActivityCompat.requestPermissions(Main_Activity.this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+        getPermissionForNokmusae(); // 마이크, 인터넷, 외부저장소에 대한 권한 요청
+
+        File nokmusaeDir = new File(directoryName);
+        // 녹무새 앱에서 생성된 녹음파일, 텍스트 파일을 저장할 디렉토리 생성
+        if(!nokmusaeDir.exists()) {
+            nokmusaeDir.mkdirs();
+            Toast.makeText(this, "저장완료", Toast.LENGTH_SHORT).show();
         }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -86,9 +91,14 @@ public class Main_Activity extends AppCompatActivity {
         });
     }
 
-    public void changeFragment(int index) {
-        if(index == 5){
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_content,menu5Fragment).commit();
+    public void getPermissionForNokmusae()
+    {
+        if(ActivityCompat.checkSelfPermission(getApplicationContext(),Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(Main_Activity.this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
         }
     }
 }

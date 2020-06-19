@@ -38,7 +38,6 @@ public class F_RecognizeVoice extends AppCompatActivity {
 
     final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
     final static String fileName = "friendInfo05.txt";
-    final static String filePath = folderName + "/" + fileName;
     final static String TextFileName = "textInfo.txt";
     final static String filePath02 = folderName + "/" + TextFileName;
 

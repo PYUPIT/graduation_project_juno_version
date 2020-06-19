@@ -36,11 +36,9 @@ public class ShowFriends extends Fragment {
     String[] list_email;
     String[] list_id;
 
-    final static String folderName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Download/friend";
-    final static String fileName = "friendInfo05.txt";
-    final static String filePath = folderName + "/" + fileName;
-
-//    File folderName2 = new File(getActivity().getFilesDir().getPath() + "FriendList");
+    private final String directoryName = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Nokmusae";
+    private final String fileName = "61895144.txt";
+    private final String filePath = directoryName + "/" + fileName;
 
     FileInputStream fileInputStreamCounter = null;
     BufferedReader bufferedReaderCounter = null;
