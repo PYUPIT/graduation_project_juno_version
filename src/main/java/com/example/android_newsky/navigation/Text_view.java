@@ -46,8 +46,8 @@ public class Text_view extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_text_view);
+
         memo = (EditText) findViewById(R.id.et1);
         lv1 = (ListView) findViewById(R.id.listview);
         dp1 = (DatePicker) findViewById(R.id.datePicker);

@@ -4,9 +4,11 @@
     package="com.example.android_newsky">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!--        android:requestLegacyExternalStorage="true"-->
 
     <application
         android:name="androidx.multidex.MultiDexApplication"
@@ -17,30 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- android:name=".GlobalApplication" -->
-
-        <activity android:name=".navigation.AddPhotoActivity" />
-
-        <activity android:name=".navigation.F_ShowProfile" >
-
-        </activity>
-
-        <activity android:name=".navigation.F_AddFriend_Activity">
-        </activity>
-
-        <activity android:name=".navigation.F_ModifyFriend">
-        </activity>
-
-        <activity android:name=".navigation.File_Write">
-
-        </activity>
-
-        <activity android:name=".navigation.RecordActivity">
-        </activity>
-        <activity android:name=".navigation.RecorderPlayerActivity">
-        </activity>
-
-        <activity android:name=".navigation.Friend_View">
+        <activity android:name=".Main_Activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -48,11 +27,30 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".LoginActivity">
+        <activity android:name=".navigation.social.ShowFriends_AddFriend" />
+
+        <activity android:name=".navigation.social.ShowFriends_ShowProfile" />
+
+        <activity android:name=".navigation.F_ModifyFriend">
         </activity>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".navigation.File_Write">
         </activity>
+
+        <activity android:name=".navigation.F_RecognizeVoice">
+        </activity>
+
+        <activity android:name=".navigation.RecordActivity"> </activity>
+        <activity android:name=".navigation.RecorderPlayerActivity">
+        </activity>
+
+        <activity android:name=".navigation.Friend_View">
+        </activity>
+
+        <activity android:name=".navigation.Text_view">
+        </activity>
+
+<!--        <activity android:name=".MainActivity" />-->
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

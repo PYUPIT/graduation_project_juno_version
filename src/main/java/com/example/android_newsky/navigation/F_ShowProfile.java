@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android_newsky.R;
 

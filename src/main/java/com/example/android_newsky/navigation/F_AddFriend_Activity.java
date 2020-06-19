@@ -34,6 +34,9 @@ public class F_AddFriend_Activity extends Activity {
     FileOutputStream fileOutputStreamNumber = null;
     BufferedWriter  bufferedWriterNumber = null;
 
+    FileInputStream fileInputStreamNumber = null;
+    BufferedReader bufferedReaderNumber = null;
+
     FileOutputStream fileOutputStreamValue = null;
     BufferedWriter bufferedWriterValue = null;
 
@@ -53,20 +56,25 @@ public class F_AddFriend_Activity extends Activity {
 
         String editIndex = editTextName.getText().toString();
 
-//        try {
-//            File dir = new File(folderName);
-//
-//            if (!dir.exists()) { dir.mkdir(); } // 폴더가 존재하지 않는다면 폴더 생성
-//
-//            fileOutputStreamNumber = new FileOutputStream(idFilePath, false);
-//            bufferedWriterNumber = new BufferedWriter(new OutputStreamWriter(fileOutputStreamNumber));
-//
-//            bufferedWriterNumber.write("3");
-//            bufferedWriterNumber.flush();
-//
-//            bufferedWriterNumber.close();
-//            bufferedWriterNumber.close();
-//        } catch (IOException e) { e.printStackTrace(); }
+        try {
+            File dir = new File(folderName);
+
+            if (!dir.exists()) { dir.mkdir(); } // 폴더가 존재하지 않는다면 폴더 생성
+
+            fileInputStreamNumber = new FileInputStream(idFilePath);
+            bufferedReaderNumber = new BufferedReader(new InputStreamReader(fileInputStreamNumber));
+
+            if(bufferedReaderNumber.readLine() == null) {
+                fileOutputStreamNumber = new FileOutputStream(idFilePath, false);
+                bufferedWriterNumber = new BufferedWriter(new OutputStreamWriter(fileOutputStreamNumber));
+
+                bufferedWriterNumber.write("0");
+                bufferedWriterNumber.flush();
+
+                bufferedWriterNumber.close();
+                bufferedWriterNumber.close();
+            }
+        } catch (IOException e) { e.printStackTrace(); }
 
         try {
             FileInputStream fileInputStreamNumber = new FileInputStream(idFilePath);

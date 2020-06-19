@@ -43,11 +43,12 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 //                supportFragmentManager.beginTransaction().replace(R.id.main_content,detailViewFragment).commit()
 //                return true
 //            }
-            R.id.action_chat ->{
-                if(ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-                    startActivity(Intent(this, AddPhotoActivity::class.java))
-                }
-            }
+//            준호가 주석처리함
+//            R.id.action_chat ->{
+//            if(ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+//                startActivity(Intent(this, AddPhotoActivity::class.java))
+//            }
+//        }
             R.id.action_setting ->{
                 var setViewFragment = SetViewFragment()
                 supportFragmentManager.beginTransaction().replace(R.id.main_content,setViewFragment).commit()
